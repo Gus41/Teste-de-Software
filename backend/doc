@@ -1,0 +1,11 @@
+GET /clientes/ → Lista todos os clientes
+
+POST /clientes/ → Cria novo cliente + conta corrente associada
+
+GET /clientes/<id>/ → Busca cliente por ID
+
+PUT /clientes/<id>/ → Atualiza cliente (e conta, se enviado)
+
+PATCH /clientes/<id>/ → Atualização parcial
+
+DELETE /clientes/<id>/ → Remove cliente e sua conta
