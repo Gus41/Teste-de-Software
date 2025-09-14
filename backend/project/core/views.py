@@ -4,6 +4,9 @@ from .serializers import ClienteSerializer
 from django.shortcuts import render
 from .views import lista_clientes
 
+def pagina_criar_cliente(request):
+    return render(request, 'CriarCliente.html')
+    
 class ClienteListCreateView(generics.ListCreateAPIView):
     queryset = Cliente.objects.all()
     serializer_class = ClienteSerializer
