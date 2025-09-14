@@ -22,4 +22,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/',include('core.urls'))
 ]
-
+urlpatterns = [
+    path('clientes/', lista_clientes, name='lista_clientes'),
+]
