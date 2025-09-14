@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Clientes e Contas Correntes</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+        }
+        .cliente {
+            border: 1px solid #ccc;
+            padding: 15px;
+            margin-bottom: 10px;
+        }
+        .form-group {
+            margin-bottom: 10px;
+        }
+        label {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <h1>Lista de Clientes</h1>
+    <div id="clientes-container">Carregando...</div>
+
+    <hr>
+    <h2>Cadastrar Novo Cliente</h2>
+    <form id="cliente-form">
+        <div class="form-group">
+            <label>Nome: <input type="text" name="nome" required></label>
+        </div>
+        <div class="form-group">
+            <label>Idade: <input type="number" name="idade" required></label>
+        </div>
+        <div class="form-group">
+            <label>Email: <input type="email" name="email" required></label>
+        </div>
+        <div class="form-group">
+            <label>Ativo: <input type="checkbox" name="ativo" checked></label>
+        </div>
+        <h3>Conta Corrente</h3>
+        <div class="form-group">
+            <label>Saldo Inicial: <input type="number" step="0.01" name="saldo" required></label>
+        </div>
+        <div class="form-group">
+            <label>Conta Ativa: <input type="checkbox" name="ativa" checked></label>
+        </div>
+        <button type="submit">Cadastrar Cliente</button>
+    </form>
+
+    <script>
+        const API_URL = 'http://localhost:8000/api/clientes/'; // Ajuste a URL conforme necessário
+
+        async function carregarClientes() {
+            const container = document.getElementById('clientes-container');
+            container.innerHTML = 'Carregando...';
+
+            try {
+                const response = await fetch(API_URL);
+                const clientes = await response.json();
+
+                if (clientes.length === 0) {
+                    container.innerHTML = '<p>Nenhum cliente encontrado.</p>';
+                    return;
+                }
+
+                container.innerHTML = '';
+                clientes.forEach(cliente => {
+                    const div = document.createElement('div');
+                    div.className = 'cliente';
+                    div.innerHTML = `
+                        <h3>${cliente.nome}</h3>
+                        <p><strong>ID:</strong> ${cliente.id}</p>
+                        <p><strong>Email:</strong> ${cliente.email}</p>
+                        <p><strong>Idade:</strong> ${cliente.idade}</p>
+                        <p><strong>Status:</strong> ${cliente.ativo ? 'Ativo' : 'Inativo'}</p>
+                        <hr>
+                        <p><strong>Conta Corrente ID:</strong> ${cliente.conta_corrente.id}</p>
+                        <p><strong>Saldo:</strong> R$ ${cliente.conta_corrente.saldo.toFixed(2)}</p>
+                        <p><strong>Status da Conta:</strong> ${cliente.conta_corrente.ativa ? 'Ativa' : 'Inativa'}</p>
+                    `;
+                    container.appendChild(div);
+                });
+
+            } catch (error) {
+                console.error('Erro ao carregar clientes:', error);
+                container.innerHTML = '<p>Erro ao carregar dados.</p>';
+            }
+        }
+
+        document.getElementById('cliente-form').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const form = e.target;
+            const cliente = {
+                nome: form.nome.value,
+                idade: parseInt(form.idade.value),
+                email: form.email.value,
+                ativo: form.ativo.checked,
+                conta_corrente: {
+                    saldo: parseFloat(form.saldo.value),
+                    ativa: form.ativa.checked
+                }
+            };
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(cliente)
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    alert('Erro ao cadastrar cliente:\n' + JSON.stringify(errorData, null, 2));
+                    return;
+                }
+
+                alert('Cliente cadastrado com sucesso!');
+                form.reset();
+                carregarClientes();
+
+            } catch (error) {
+                alert('Erro ao cadastrar cliente. Verifique o console.');
+                console.error('Erro ao enviar formulário:', error);
+            }
+        });
+
+        carregarClientes();
+    </script>
+</body>
+</html>
