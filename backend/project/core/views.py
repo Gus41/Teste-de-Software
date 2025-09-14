@@ -2,6 +2,7 @@ from rest_framework import status, generics
 from .models import Cliente
 from .serializers import ClienteSerializer
 from django.shortcuts import render
+from .views import lista_clientes
 
 class ClienteListCreateView(generics.ListCreateAPIView):
     queryset = Cliente.objects.all()
