@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Clientes</title>
+    <link rel="stylesheet" href="css/css.css">
+</head>
+<body>
+    <h1>Lista de Clientes</h1>
+
+    {% for cliente in clientes %}
+        <div class="cliente {% if not cliente.ativo %}inativo{% endif %}">
+            <h2>{{ cliente.nome }}</h2>
+            <p><strong>ID:</strong> {{ cliente.id }}</p>
+            <p><strong>Email:</strong> {{ cliente.email }}</p>
+            <p><strong>Idade:</strong> {{ cliente.idade }}</p>
+            <p><strong>Status:</strong> {{ "Ativo" if cliente.ativo else "Inativo" }}</p>
+            <hr>
+            <p><strong>Conta Corrente ID:</strong> {{ cliente.conta_corrente.id }}</p>
+            <p><strong>Saldo:</strong> R$ {{ cliente.conta_corrente.saldo }}</p>
+            <p><strong>Status da Conta:</strong> {{ "Ativa" if cliente.conta_corrente.ativa else "Inativa" }}</p>
+        </div>
+    {% empty %}
+        <p>Nenhum cliente encontrado.</p>
+    {% endfor %}
+</body>
+</html>
