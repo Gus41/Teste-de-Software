@@ -1,7 +1,7 @@
 from rest_framework import status, generics
 from .models import Cliente
 from .serializers import ClienteSerializer
-
+from django.shortcuts import render
 
 class ClienteListCreateView(generics.ListCreateAPIView):
     queryset = Cliente.objects.all()
@@ -10,3 +10,7 @@ class ClienteListCreateView(generics.ListCreateAPIView):
 class ClienteDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Cliente.objects.all()
     serializer_class = ClienteSerializer
+    
+def lista_clientes(request):
+    clientes = Cliente.objects.select_related('conta_corrente').all()
+    return render(request, 'clientes.html', {'clientes': clientes})
