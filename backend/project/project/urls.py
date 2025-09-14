@@ -19,8 +19,7 @@ from django.urls import path, include
 from .views import lista_clientes
 from .views import ClienteViewSet
 
-router = DefaultRouter()
-router.register(r'clientes', ClienteViewSet)
+
 
 urlpatterns = [
     path('api/', include(router.urls)),
@@ -28,7 +27,4 @@ urlpatterns = [
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/',include('core.urls'))
-]
-urlpatterns = [
-    path('clientes/', lista_clientes, name='lista_clientes'),
 ]
