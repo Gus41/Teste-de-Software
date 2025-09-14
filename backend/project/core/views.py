@@ -13,4 +13,4 @@ class ClienteDetailView(generics.RetrieveUpdateDestroyAPIView):
     
 def lista_clientes(request):
     clientes = Cliente.objects.select_related('conta_corrente').all()
-    return render(request, 'clientes.html', {'clientes': clientes})
+    return render(request, 'Clientes.html', {'clientes': clientes})
