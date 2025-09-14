@@ -17,7 +17,14 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from .views import lista_clientes
+from .views import ClienteViewSet
 
+router = DefaultRouter()
+router.register(r'clientes', ClienteViewSet)
+
+urlpatterns = [
+    path('api/', include(router.urls)),
+]
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/',include('core.urls'))
