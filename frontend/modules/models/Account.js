@@ -1,5 +1,5 @@
-class Account {
-    constructor(id, saldo, ativa) {
+export class Account {
+    constructor(id=null, saldo, ativa) {
         this.id = id;
         this.saldo = saldo;
         this.ativa = ativa;
