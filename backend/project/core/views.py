@@ -10,6 +10,7 @@ class ClienteListCreateView(generics.ListCreateAPIView):
 class ClienteDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Cliente.objects.all()
     serializer_class = ClienteSerializer
+    
 
 class ContaCorrenteListCreateView(generics.ListCreateAPIView):
     queryset = ContaCorrente.objects.all()

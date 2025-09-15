@@ -1,11 +1,11 @@
-import { Account } from 'models/Account'
+import { Account } from '../models/Account.js'
 
-class Client {
+export class Client {
     constructor(name, age, email, active, conta_corrente) {
-        this.name = name;
-        this.age = age;
+        this.nome = name;
+        this.idade = age;
         this.email = email;
-        this.active = active;
+        this.ativo = active;
         this.conta_corrente = conta_corrente
         ? new Account(
             conta_corrente.id,

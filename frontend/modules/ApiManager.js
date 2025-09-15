@@ -1,6 +1,6 @@
-import { Client } from 'models/Client';
+import { Client } from '../modules/models/Client.js';
 
-class ApiManager {
+export class ApiManager {
     constructor(apiUrl) {
         this.apiUrl = apiUrl;
     }
@@ -9,7 +9,6 @@ class ApiManager {
         const res = await fetch(`${this.apiUrl}/clientes`);
         const data = await res.json();
         return data.map(c => new Client(
-            c.id,
             c.nome,
             c.idade,
             c.email,
@@ -22,7 +21,6 @@ class ApiManager {
         const res = await fetch(`${this.apiUrl}/clientes/${id}`);
         const c = await res.json();
         return new Client(
-            c.id,
             c.nome,
             c.idade,
             c.email,
@@ -32,6 +30,7 @@ class ApiManager {
     }
 
     async createClient(client) {
+        console.log(client.conta_corrente)
         const res = await fetch(`${this.apiUrl}/clientes/`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -40,7 +39,7 @@ class ApiManager {
                 idade: client.idade,
                 email: client.email,
                 ativo: client.ativo,
-                conta_corrente: client.conta_corrente?.id
+                conta_corrente: client.conta_corrente
             })
         });
         return await res.json();
@@ -55,7 +54,7 @@ class ApiManager {
                 idade: client.idade,
                 email: client.email,
                 ativo: client.ativo,
-                conta_corrente: client.conta_corrente?.id
+                conta_corrente: client.conta_corrente
             })
         });
         return await res.json();
@@ -69,4 +68,3 @@ class ApiManager {
     }
 }
 
-export { ApiManager };
