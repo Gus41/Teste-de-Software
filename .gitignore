@@ -60,3 +60,8 @@ Thumbs.db
 dist/
 build/
 .eggs/
+
+
+#nodejs
+
+node_modules
