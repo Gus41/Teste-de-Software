@@ -48,11 +48,29 @@ export class DocumentManager {
 
         clientes.forEach(cliente => {
             const card = document.createElement('div');
-            card.className = 'p-4 bg-gray-100 rounded-lg cursor-pointer hover:bg-gray-200';
-            card.innerText = cliente.nome;
+            card.className = 'p-4 bg-white rounded-xl shadow hover:shadow-lg transition cursor-pointer flex flex-col gap-2';
+
+            card.innerHTML = `
+                <div class="flex justify-between items-center">
+                    <h3 class="text-lg font-semibold text-gray-800">${cliente.nome}</h3>
+                    <span class="text-sm ${cliente.ativo ? 'text-green-600' : 'text-red-500'} font-medium">
+                        ${cliente.ativo ? 'Ativo' : 'Inativo'}
+                    </span>
+                </div>
+                <p class="text-sm text-gray-500">Idade: ${cliente.idade}</p>
+                <p class="text-sm text-gray-500">Email: ${cliente.email}</p>
+                ${cliente.conta_corrente ? `
+                    <p class="text-sm text-gray-700">Saldo: R$ ${cliente.conta_corrente.saldo}</p>
+                    <p class="text-sm ${cliente.conta_corrente.ativa ? 'text-green-600' : 'text-red-500'}">
+                        Conta: ${cliente.conta_corrente.ativa ? 'Ativa' : 'Inativa'}
+                    </p>
+                ` : '<p class="text-sm text-gray-400">Sem conta corrente</p>'}
+            `;
+
             card.addEventListener('click', () => this.openModal(cliente));
             container.appendChild(card);
         });
+
     }
     openModal(cliente) {
         this.currentClient = cliente;
