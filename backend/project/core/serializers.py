@@ -35,3 +35,7 @@ class ClienteSerializer(serializers.ModelSerializer):
             conta_corrente.save()
 
         return instance
+    def validate_idade(self, value):
+        if value < 17 or value > 150:
+            raise serializers.ValidationError("A idade deve estar entre 18 e 150 anos.")
+        return value
