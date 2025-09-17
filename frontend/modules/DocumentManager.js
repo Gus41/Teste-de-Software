@@ -22,14 +22,31 @@ export class DocumentManager {
         this.cancelBtn = document.getElementById('cancelBtn');
         this.currentClient = null;
 
+        this.deleteClientButton = document.getElementById("deleteBtn")
+
         if (this.cancelBtn) {
             this.cancelBtn.addEventListener('click', () => this.modal.classList.add('hidden'));
         }
         if (this.editForm) {
             this.editForm.addEventListener('submit', e => this.handleEditSubmit(e));
         }
+        if (this.deleteClientButton) {
+            this.deleteClientButton.addEventListener("click", () => this.handleDelete())
+        }
 
         this.loadClients();
+    }
+
+    handleDelete() {
+        if (confirm("Tem certeza que deseja deletar o atual cliente?")) {
+            this.apiManager.deleteClient(this.editForm.id.value)
+        }
+    }
+
+    async deleteClient() {
+        if (this.editForm.id.value) {
+            await this.apiManager.deleteClient(this.editForm.id.value)
+        }
     }
 
     async loadClients() {
@@ -80,6 +97,7 @@ export class DocumentManager {
         this.editForm.email.value = cliente.email;
         this.editForm.ativo.checked = cliente.ativo;
 
+
         if (cliente.conta_corrente) {
             this.editForm.saldo.value = cliente.conta_corrente.saldo;
             this.editForm.ativa.checked = cliente.conta_corrente.ativa;
@@ -88,7 +106,7 @@ export class DocumentManager {
             this.editForm.ativa.checked = true;
         }
 
-        this.editForm.querySelector('#cliente-id').value = cliente.id;
+        this.editForm.id.value = cliente.id;
 
         this.modal.classList.remove('hidden');
     }
