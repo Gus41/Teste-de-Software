@@ -1,45 +1,108 @@
-import { Client } from '../modules/models/Client.js'
+import { Client } from '../modules/models/Client.js';
+import { Account } from '../modules/models/Account.js'
 import { ApiManager } from './ApiManager.js';
 
 export class DocumentManager {
     constructor(formID, clientsContainerID) {
-
-        this.apiManager = new ApiManager('http://127.0.0.1:8000/api')
-
+        this.apiManager = new ApiManager('http://127.0.0.1:8000/api');
         this.formID = formID;
         this.form = document.getElementById(this.formID);
-        this.form.addEventListener('submit', e => {
-            e.preventDefault();
-            if (this.validateForm()) {
-                this.handlePost();
-            }
-        });
+        if (this.form) {
+            this.form.addEventListener('submit', e => {
+                e.preventDefault();
+                if (this.validateForm()) {
+                    this.handlePost();
+                }
+            });
+        }
 
-        this.clientsContainerID = clientsContainerID
-        this.loadClients()
+        this.clientsContainerID = clientsContainerID;
+        this.modal = document.getElementById('editModal');
+        this.editForm = document.getElementById('edit-form');
+        this.cancelBtn = document.getElementById('cancelBtn');
+        this.currentClient = null;
 
+        if (this.cancelBtn) {
+            this.cancelBtn.addEventListener('click', () => this.modal.classList.add('hidden'));
+        }
+        if (this.editForm) {
+            this.editForm.addEventListener('submit', e => this.handleEditSubmit(e));
+        }
+
+        this.loadClients();
     }
 
     async loadClients() {
-        if (this.clientsContainerID) {
-            const container = document.getElementById(this.clientsContainerID)
-            if(container){
-                const clientes = await this.apiManager.getClients()
+        if (!this.clientsContainerID) return;
+        const container = document.getElementById(this.clientsContainerID);
+        if (!container) return;
 
-                if(clientes.length == 0){
-                    container.innerHTML = "<p>Nenhum cadastrado ainda</p>"
-                    return
-                }
+        const clientes = await this.apiManager.getClients();
 
-                container.innerHTML = ""
+        container.innerHTML = '';
 
-                for(let i = 0 ; i < clientes.length ; i ++){
-                    const node = document.createElement("p")
-                    node.innerText = clientes[i].nome
-                    container.appendChild(node)
-                }
-            }
+        if (clientes.length === 0) {
+            container.innerHTML = '<p>Nenhum cadastrado ainda</p>';
+            return;
         }
+
+        clientes.forEach(cliente => {
+            const card = document.createElement('div');
+            card.className = 'p-4 bg-gray-100 rounded-lg cursor-pointer hover:bg-gray-200';
+            card.innerText = cliente.nome;
+            card.addEventListener('click', () => this.openModal(cliente));
+            container.appendChild(card);
+        });
+    }
+    openModal(cliente) {
+        this.currentClient = cliente;
+
+        this.editForm.nome.value = cliente.nome;
+        this.editForm.idade.value = cliente.idade;
+        this.editForm.email.value = cliente.email;
+        this.editForm.ativo.checked = cliente.ativo;
+
+        if (cliente.conta_corrente) {
+            this.editForm.saldo.value = cliente.conta_corrente.saldo;
+            this.editForm.ativa.checked = cliente.conta_corrente.ativa;
+        } else {
+            this.editForm.saldo.value = 0;
+            this.editForm.ativa.checked = true;
+        }
+
+        this.editForm.querySelector('#cliente-id').value = cliente.id;
+
+        this.modal.classList.remove('hidden');
+    }
+
+
+
+    handleEditSubmit(e) {
+        e.preventDefault();
+        if (!this.currentClient) return;
+        this.currentClient.nome = this.editForm.nome.value;
+        this.currentClient.idade = parseInt(this.editForm.idade.value, 10);
+        this.currentClient.email = this.editForm.email.value;
+        this.currentClient.ativo = this.editForm.ativo.checked;
+        this.currentClient.id = this.editForm.id.value;
+        const conta_corrente = new Account(
+            null,
+            this.editForm.saldo.value,
+            this.editForm.ativa.checked
+        )
+
+
+        const client = new Client(
+            this.currentClient.id,
+            this.currentClient.nome,
+            this.currentClient.idade,
+            this.currentClient.email,
+            this.currentClient.ativo,
+            conta_corrente
+        )
+        this.apiManager.updateClient(client.id, client);
+        this.modal.classList.add('hidden');
+        this.loadClients();
     }
 
     validateForm() {
@@ -49,22 +112,22 @@ export class DocumentManager {
         const saldo = parseFloat(this.form.saldo.value);
 
         if (!nome) {
-            alert("O campo nome é obrigatório.");
+            alert('O campo nome é obrigatório.');
             return false;
         }
 
         if (isNaN(idade) || idade < 18) {
-            alert("A idade deve ser um número válido e maior ou igual a 18.");
+            alert('A idade deve ser um número válido e maior ou igual a 18.');
             return false;
         }
 
         if (!this.isValidEmail(email)) {
-            alert("Digite um e-mail válido.");
+            alert('Digite um e-mail válido.');
             return false;
         }
 
         if (isNaN(saldo) || saldo < 0) {
-            alert("O saldo deve ser um número válido e não pode ser negativo.");
+            alert('O saldo deve ser um número válido e não pode ser negativo.');
             return false;
         }
 
@@ -82,6 +145,7 @@ export class DocumentManager {
         };
 
         const cliente = new Client(
+            null,
             this.form.nome.value.trim(),
             parseInt(this.form.idade.value, 10),
             this.form.email.value.trim(),
@@ -89,13 +153,11 @@ export class DocumentManager {
             conta_corrente
         );
 
-        console.log("Cliente pronto para envio:", cliente);
+        console.log('Cliente pronto para envio:', cliente);
         this.post(cliente);
     }
 
-
     post(cliente) {
-        this.apiManager.createClient(cliente)
+        this.apiManager.createClient(cliente);
     }
 }
-

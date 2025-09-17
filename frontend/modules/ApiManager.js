@@ -8,7 +8,9 @@ export class ApiManager {
     async getClients() {
         const res = await fetch(`${this.apiUrl}/clientes`);
         const data = await res.json();
+
         return data.map(c => new Client(
+            c.id,
             c.nome,
             c.idade,
             c.email,
@@ -20,7 +22,9 @@ export class ApiManager {
     async getClientById(id) {
         const res = await fetch(`${this.apiUrl}/clientes/${id}`);
         const c = await res.json();
+        
         return new Client(
+            c.id,
             c.nome,
             c.idade,
             c.email,
@@ -30,7 +34,7 @@ export class ApiManager {
     }
 
     async createClient(client) {
-        console.log(client.conta_corrente)
+         
         const res = await fetch(`${this.apiUrl}/clientes/`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -46,6 +50,7 @@ export class ApiManager {
     }
 
     async updateClient(id, client) {
+        console.log(client.conta_corrente)
         const res = await fetch(`${this.apiUrl}/clientes/${id}/`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },

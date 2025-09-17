@@ -1,7 +1,8 @@
 import { Account } from '../models/Account.js'
 
 export class Client {
-    constructor(name, age, email, active, conta_corrente) {
+    constructor(id,name, age, email, active, conta_corrente) {
+        this.id = id
         this.nome = name;
         this.idade = age;
         this.email = email;
@@ -15,7 +16,9 @@ export class Client {
         : null;
     }
 
-
+    setId(id){
+        this.id = id
+    }
     getInfo() {
         return `
             Client ID: ${this.id}
