@@ -1,8 +1,8 @@
-import { DocumentManager } from '../path/to/DocumentManager';
-import { Client } from '../modules/models/Client.js';
-import { Account } from '../modules/models/Account.js';
+import { DocumentManager } from '../DocumentManager.js';
+import { Client } from '../models/Client.js';
+import { jest } from '@jest/globals';
 
-jest.mock('../path/to/ApiManager.js', () => {
+jest.mock('../ApiManager.js', () => {
     return {
         ApiManager: jest.fn().mockImplementation(() => ({
             getClients: jest.fn().mockResolvedValue([

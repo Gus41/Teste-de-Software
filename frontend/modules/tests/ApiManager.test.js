@@ -1,5 +1,8 @@
-import { ApiManager } from './ApiManager.js';
-import { Client } from '../modules/models/Client.js';
+import { ApiManager } from '../ApiManager.js';
+import { Client } from '../models/Client.js';
+import { jest } from '@jest/globals';
+
+
 beforeEach(() => {
   global.fetch = jest.fn();
   fetch.mockClear();
